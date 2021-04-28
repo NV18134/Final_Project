@@ -217,7 +217,7 @@ if one_date:
     st.markdown(f"<h style='font-size:30px'>{graph_type.title()} of {consequence.title()} on {min_date.month}-{min_date.day}-{min_date.year}</h>", unsafe_allow_html=True)
 else:
     st.markdown(
-        f'<h style="font-size:23px"><u><b>{graph_type.title()} of {consequence.title()} Between {time[0].month}-{time[0].day}-{time[0].year} & {time[1].month}-'
+        f'<h style="font-size:20px"><u><b>{graph_type.title()} of {consequence.title()} Between {time[0].month}-{time[0].day}-{time[0].year} & {time[1].month}-'
         f'{time[1].day}-{time[1].year}</b></u></h>', unsafe_allow_html=True)
 
 st.pydeck_chart(r)
