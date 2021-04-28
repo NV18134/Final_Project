@@ -202,7 +202,7 @@ else:
     tooltip = tooltip_hex
     graph_type = 'HexLayer Graph'
 
-r = pdk.Deck(
+final_map = pdk.Deck(
     map_style="mapbox://styles/mapbox/light-v9",
     layers=layer,
     initial_view_state=view_state,
@@ -217,7 +217,7 @@ else:
         f'{graph_type.title()} of {consequence.title()} Between {time[0].month}-{time[0].day}-{time[0].year} & {time[1].month}-'
         f'{time[1].day}-{time[1].year}')
 
-st.pydeck_chart(r)
+st.pydeck_chart(final_map)
 
 # Second Query Input/Input Creation
 
