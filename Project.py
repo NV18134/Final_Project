@@ -108,28 +108,30 @@ def timestamp_datetime_convert(time, ts_to_dt=True):
         return pd.Timestamp(time)
 
 
-# Inputs & Computations First Query
+# Get Data
 FILENAME = 'nyc_veh_crash_sample.xlsx'
 data = pd.read_excel(FILENAME)
 accidents = pd.DataFrame(data)
 accidents = accidents.set_index('UNIQUE KEY')
 
+st.markdown("<h style='font-size:30px'><u><b>Nate's Final Project</b></u></h></br>", unsafe_allow_html=True)
+# Inputs & Computations First Query
 st.sidebar.title('First Query')
 consequence = uniqueList(accidents.iloc[:, 11:18].columns)
-consequence.insert(0, 'Unspecified')
+consequence.insert(0, 'UNSPECIFIED')
 consequence = st.sidebar.selectbox('Select Consequence: ', consequence)
 
 borough_list = uniqueList(accidents['BOROUGH'], True)
-borough_list.insert(0, 'All')
+borough_list.insert(0, 'ALL')
 selected_borough = st.sidebar.selectbox('Select Borough:', borough_list)
 
-if consequence != 'Unspecified':
+if consequence != 'UNSPECIFIED':
     maps_data = accidents[['DATE', 'LATITUDE', "LONGITUDE", 'BOROUGH', consequence]].dropna()
     maps_data = maps_data[maps_data[consequence] != 0]
 else:
     maps_data = accidents[['DATE', 'LATITUDE', "LONGITUDE", 'BOROUGH']].dropna()
 
-if selected_borough != 'All':
+if selected_borough != 'ALL':
     maps_data = maps_data[maps_data.BOROUGH == selected_borough]
 else:
     maps_data = maps_data[:][:]
@@ -140,6 +142,7 @@ max_date = maps_data['date'].max()
 max_date = timestamp_datetime_convert(max_date)
 min_date = maps_data['date'].min()
 min_date = timestamp_datetime_convert(min_date)
+
 
 if min_date != max_date:
     time = st.sidebar.slider('Date Range:', min_value=min_date, max_value=max_date, value=(min_date, max_date))
@@ -202,7 +205,7 @@ else:
     tooltip = tooltip_hex
     graph_type = 'HexLayer Graph'
 
-final_map = pdk.Deck(
+r = pdk.Deck(
     map_style="mapbox://styles/mapbox/light-v9",
     layers=layer,
     initial_view_state=view_state,
@@ -211,13 +214,13 @@ final_map = pdk.Deck(
 
 # First Query Output
 if one_date:
-    st.header(f"{graph_type.title()} of {consequence.title()} on {min_date.month}-{min_date.day}-{min_date.year}")
+    st.markdown(f"<h style='font-size:30px'>{graph_type.title()} of {consequence.title()} on {min_date.month}-{min_date.day}-{min_date.year}</h>", unsafe_allow_html=True)
 else:
-    st.header(
-        f'{graph_type.title()} of {consequence.title()} Between {time[0].month}-{time[0].day}-{time[0].year} & {time[1].month}-'
-        f'{time[1].day}-{time[1].year}')
+    st.markdown(
+        f'<h style="font-size:23px"><u><b>{graph_type.title()} of {consequence.title()} Between {time[0].month}-{time[0].day}-{time[0].year} & {time[1].month}-'
+        f'{time[1].day}-{time[1].year}</b></u></h>', unsafe_allow_html=True)
 
-st.pydeck_chart(final_map)
+st.pydeck_chart(r)
 
 # Second Query Input/Input Creation
 
@@ -243,7 +246,7 @@ info_list = [column for column in selected_columns if "FACTOR" in column or 'TYP
 
 selected_info = st.sidebar.selectbox('What You Like To See: ', info_list)
 
-borough_list.pop(borough_list.index('All'))
+borough_list.pop(borough_list.index('ALL'))
 
 borough = st.sidebar.selectbox('Which Borough Would You Like to See', borough_list)
 top_x = st.sidebar.slider('How Many Top Positions:', min_value=1, max_value=10, value=2)
@@ -269,9 +272,13 @@ top_x_results = top_x_results.to_frame(f"Counts")
 
 # Second Query Output
 if num_vehicles != 1:
-    st.header(f"Top {top_x} {selected_info.title()} in {borough.title()} for Accidents With {num_vehicles} Vehicles")
+    st.markdown(f"<h style='font-size:23px'><u><b>Top {top_x} {selected_info.title()} in {borough.title()} "
+                f"for Accidents With {num_vehicles} Vehicles</b></u></h>",
+                unsafe_allow_html=True)
 else:
-    st.header(f"Top {top_x} {selected_info.title()} in {borough.title()} for Accidents With {num_vehicles} Vehicle")
+    st.markdown(f"<br><h style='font-size:23px'><u><b>Top {top_x} {selected_info.title()} in {borough.title()} for "
+                f"Accidents With {num_vehicles} Vehicle</b></u></h>",
+                unsafe_allow_html=True)
 
 st.dataframe(top_x_results)
 
@@ -283,7 +290,7 @@ top_x_results.plot.bar(ax=ax, color='#1d1fcc')
 
 plt.xticks(rotation=45, horizontalalignment='right')
 plt.yticks(horizontalalignment="right", verticalalignment='center')
-plt.legend(facecolor='#0288d1')
+plt.legend(facecolor='green')
 plt.xlabel('Count', size=10)
 plt.ylabel(f"{selected_info.title()}", size=10)
 fig.tight_layout()
